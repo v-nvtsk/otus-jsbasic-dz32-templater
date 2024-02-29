@@ -14,22 +14,12 @@ export class BaseComponent<State = {}> {
     this.onMount(el);
   }
 
-  eventListener() {
+  setEventHandlers() {
     Object.entries(this.events).forEach(([key, callback]) => {
       const [action, selector] = key.split("@");
       this.el.addEventListener(action, (ev: Event) => {
         if (ev.target !== null && ev.target instanceof HTMLElement) {
-          let currentSelector = ev.target!.tagName;
-          const currentId = ev.target!.id === "" ? "" : `#${ev.target!.id}`;
-          currentSelector += currentId;
-          if ("classList" in ev.target) {
-            const currentClass =
-              ev.target.classList.length === 0
-                ? ""
-                : `${Array.from(ev.target.classList).reduce((acc, el) => `${acc}.${el}`, "")}`;
-            currentSelector += currentClass;
-          }
-          if (currentSelector === selector) {
+          if (ev.target.matches(selector)) {
             callback(ev);
           }
         }
