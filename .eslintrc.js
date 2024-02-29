@@ -14,7 +14,6 @@ module.exports = {
     tsconfigRootDir: __dirname,
   },
   rules: {
-    indent: ["error", 2],
     "import/no-unresolved": "off",
     "import/extensions": ["warn", "never"],
     "import/prefer-default-export": "off",
