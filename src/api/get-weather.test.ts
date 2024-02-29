@@ -50,7 +50,7 @@ describe("getWeatherInCity", () => {
     const result = await getWeatherInCity("Moscow");
     expect(result).toEqual({
       city: "Москва",
-      temp: Math.round(-3.43),
+      temp: String(Math.round(-3.43)),
       icon: "04d",
       coord: [37.6156, 55.7522],
     });
