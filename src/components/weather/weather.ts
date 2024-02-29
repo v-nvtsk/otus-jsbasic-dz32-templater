@@ -24,19 +24,19 @@ export class Weather extends BaseComponent<State> {
   }
 
   public init() {
-    if (this.state.currentCity === undefined) {
-      getCityByIP()
-        .then((city) => this.updateWeather(city))
-        .then(() => {
-          this.onMount(this.el);
-          this.eventListener();
-        });
-    } else {
-      this.updateWeather(this.state.currentCity).then(() => {
+    const initialCity =
+      this.state.currentCity !== undefined
+        ? new Promise((resolve) => {
+            resolve(this.state.currentCity);
+          })
+        : getCityByIP();
+
+    initialCity
+      .then((city) => this.updateWeather(city))
+      .then(() => {
         this.onMount(this.el);
-        this.eventListener();
+        this.setEventHandlers();
       });
-    }
   }
 
   private onSubmit = (ev: Event) => {
