@@ -6,7 +6,7 @@ import { BaseComponent } from "../base-component/base-component";
 
 export type State = {
   currentCity: string;
-  currentTemp: number;
+  currentTemp: string;
   currentIcon: string;
   coord: {
     lat: number;
@@ -42,7 +42,7 @@ export class Weather extends BaseComponent<State> {
   private onSubmit = (ev: Event) => {
     ev.preventDefault();
     const inputCityEl = this.el.querySelector("#inputCity") as HTMLInputElement;
-    const city = inputCityEl.value;
+    const city = inputCityEl.value.trim();
     if (city !== "") {
       this.updateWeather(city);
       inputCityEl.value = "";
@@ -71,8 +71,8 @@ export class Weather extends BaseComponent<State> {
   };
 
   events = {
-    "click@BUTTON#submitBtn": this.onSubmit,
-    "click@LI.savedCity": this.onCitySelect,
+    "submit@form#inputGroup": this.onSubmit,
+    "click@li.savedCity": this.onCitySelect,
   };
 
   render() {
@@ -80,13 +80,13 @@ export class Weather extends BaseComponent<State> {
     <h1 id="header">Прогноз погоды</h1>
     <div id="currentWeather">
       <div id="currentCity">{{if currentCity}}{{currentCity}}{{endif}}</div>
-      {{if currentTemp}}<div id="currentTemp">{{currentTemp}}</div>{{endif}}
+      <div id="currentTemp">{{if currentTemp}}{{currentTemp}}{{endif}}</div>
       <div id="currentIcon">
       {{if currentIcon}}<img src="https://openweathermap.org/img/wn/{{currentIcon}}@2x.png">{{endif}}
       </div>
     </div>
     <form id="inputGroup"><input id="inputCity" placeholder="Enter city">
-    <button id="submitBtn">Получить погоду</button>
+    <button type="submit" id="submitBtn">Получить погоду</button>
     </form>
     <ul id="savedCitiesList">
       {{for cities as city}}

@@ -8,6 +8,7 @@ const sleep = async (x: number = 0) =>
 describe("weather", () => {
   let el: HTMLElement;
   let weatherComponent: Weather;
+  let form: HTMLFormElement;
   let cityInput: HTMLInputElement;
   let submitBtn: HTMLButtonElement;
   let savedCitiesList: HTMLElement;
@@ -70,6 +71,7 @@ describe("weather", () => {
     await weatherComponent.init();
 
     await sleep();
+    form = el.querySelector("form#inputGroup") as HTMLFormElement;
     cityInput = el.querySelector("input#inputCity") as HTMLInputElement;
     submitBtn = el.querySelector("button#submitBtn") as HTMLButtonElement;
     savedCitiesList = el.querySelector("#savedCitiesList") as HTMLElement;
@@ -81,6 +83,7 @@ describe("weather", () => {
 
   it("should create initial markup", () => {
     expect(el.innerHTML).not.toBe("");
+    expect(form).not.toBeNull();
     expect(cityInput).not.toBeNull();
     expect(submitBtn).not.toBeNull();
     expect(savedCitiesList).not.toBeNull();
@@ -92,7 +95,7 @@ describe("weather", () => {
     const len = el.querySelectorAll(".savedCity").length;
     const inner = el.innerHTML;
     cityInput.value = "";
-    submitBtn.click();
+    form.submit();
     expect(el.querySelectorAll(".savedCity").length).toBe(len);
     expect(el.innerHTML).toEqual(inner);
   });
@@ -101,33 +104,41 @@ describe("weather", () => {
     const len = el.querySelectorAll(".savedCity").length;
     const inner = el.innerHTML;
     cityInput.value = "testFaultCity";
-    submitBtn.click();
+    form.submit();
     expect(el.querySelectorAll(".savedCity").length).toBe(len);
     expect(el.innerHTML).toEqual(inner);
   });
 
   it("should add city to list", async () => {
+    expect(el.querySelectorAll(".savedCity").length).toBe(1);
+    submitBtn = el.querySelector("button#submitBtn") as HTMLButtonElement;
     const testList = ["MOSCOW", "TULA", "TESTCITY"];
     const [city1, city2] = testList;
     cityInput.value = city2;
-    submitBtn.click();
+    form.submit();
     await sleep();
     expect(el.querySelectorAll(".savedCity").length).toBe(2);
 
     cityInput = el.querySelector("input#inputCity") as HTMLInputElement;
-    submitBtn = el.querySelector("button#submitBtn") as HTMLButtonElement;
+    form = el.querySelector("form#inputGroup") as HTMLFormElement;
     cityInput.value = city1;
-    submitBtn.click();
+    form.submit();
     await sleep();
     expect(el.querySelectorAll(".savedCity").length).toBe(3);
+
+    const citiesList = el.querySelectorAll(".savedCity");
+
+    citiesList.forEach((elem, i) => {
+      expect(elem.innerHTML).toBe(testList[i]);
+    });
 
     (el.querySelectorAll(".savedCity")[1] as HTMLElement).click();
     await sleep();
 
-    const citiesList = el.querySelectorAll(".savedCity");
+    const citiesList2 = el.querySelectorAll(".savedCity");
 
     const testListAfterClick = ["TULA", "MOSCOW", "TESTCITY"];
-    citiesList.forEach((elem, i) => {
+    citiesList2.forEach((elem, i) => {
       expect(elem.innerHTML).toBe(testListAfterClick[i]);
     });
   });
