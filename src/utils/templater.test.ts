@@ -87,9 +87,21 @@ describe("template", () => {
     it("should support loops variables", () => {
       expect(template("{{for items as item}}{{item.A}}{{if isNotLast}},{{endif}}{{endfor}}", data)).toBe("1,11,111");
     });
+
+    it("works with zero number values as false", () => {
+      expect(template("{{if num}}YES{{endif}}", { num: 0 })).toBe("");
+    });
+
+    it("correctly works with non-zero number values", () => {
+      expect(template("{{if num}}YES{{endif}}", { num: 0.1 })).toBe("YES");
+    });
+
+    it("correctly works with null values", () => {
+      expect(template("{{if num}}YES{{endif}}", { num: null })).toBe("");
+    });
   });
 
-  describe("final test", () => {
+  describe("complex test", () => {
     it("should work", () => {
       const testData = {
         title: "Some Title",

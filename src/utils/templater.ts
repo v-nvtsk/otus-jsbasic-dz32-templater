@@ -7,10 +7,6 @@ function getItemData(obj: object, key: string): any {
 
     if ((data as Record<string, any>)[k]) {
       data = (data as Record<string, any>)[k];
-      // }
-
-      // if (data[k]) {
-      //   data = data[k];
     } else {
       return undefined;
     }
@@ -50,7 +46,7 @@ export function template<T>(tpl: string, data: { [key: string]: T }): string {
     const subTpl = match[2];
     let condition: unknown = data[key];
     if (key.includes(".")) condition = getItemData(data, key);
-    if (condition !== undefined && condition) {
+    if (condition) {
       str = str.replace(match[0], subTpl);
     } else {
       str = str.replace(match[0], "");
@@ -65,7 +61,7 @@ export function template<T>(tpl: string, data: { [key: string]: T }): string {
     let itemData: string = "";
     if (data[key] !== undefined) itemData = String(data[key]);
     if (key.includes(".")) itemData = getItemData(data, key);
-    if (itemData !== undefined && itemData) {
+    if (itemData !== undefined && itemData !== null) {
       str = str.replace(match[0], itemData);
     } else {
       str = str.replace(match[0], itemData || "");
