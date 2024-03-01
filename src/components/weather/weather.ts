@@ -1,4 +1,3 @@
-import { template } from "../../utils/templater";
 import getWeatherInCity from "../../api/get-weather";
 import citiesCache from "../../store/cities-cache";
 import getCityByIP from "../../api/ip";
@@ -12,6 +11,7 @@ export type State = {
     lat: number;
     lon: number;
   };
+  cities: string[];
 };
 
 export class Weather extends BaseComponent<State> {
@@ -66,7 +66,6 @@ export class Weather extends BaseComponent<State> {
         coord: { lat: weather.coord[0], lon: weather.coord[1] },
       });
       citiesCache.addCity(weather.city);
-      this.el.innerHTML = this.render();
     }
   };
 
@@ -75,8 +74,9 @@ export class Weather extends BaseComponent<State> {
     "click@li.savedCity": this.onCitySelect,
   };
 
+  // eslint-disable-next-line class-methods-use-this
   render() {
-    const templateStr = `
+    return `
     <h1 id="header">Прогноз погоды</h1>
     <div id="currentWeather">
       <div id="currentCity">{{if currentCity}}{{currentCity}}{{endif}}</div>
@@ -96,9 +96,5 @@ export class Weather extends BaseComponent<State> {
     <div id="map">{{if coord}}
     <img class="ymap" src="https://static-maps.yandex.ru/v1?ll={{coord.lat}},{{coord.lon}}&lang=ru_RU&z=12&pt={{coord.lat}},{{coord.lon}},comma&apikey=b7d16e2b-938b-4809-b74b-5ae97b162f00">
     {{endif}}</div>`;
-
-    const { currentCity, currentTemp, currentIcon, coord } = this.state;
-    const cities = [...citiesCache.cities];
-    return template(templateStr, { currentCity, currentTemp, currentIcon, cities, coord });
   }
 }

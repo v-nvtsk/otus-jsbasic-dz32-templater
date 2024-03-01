@@ -67,7 +67,7 @@ describe("weather", () => {
 
     el = document.createElement("div");
     weatherComponent = new Weather(el, { currentCity: "TestCity" });
-
+    await sleep(0);
     await weatherComponent.init();
 
     await sleep();
