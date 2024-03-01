@@ -20,7 +20,7 @@ export function template<T>(tpl: string, data: { [key: string]: T }): string {
   let str: string = tpl;
 
   // Handle "loop" matches
-  // https://regex101.com/r/nsIjjC/1
+  // https://regex101.com/r/wB1gFs/1
   const loopMatches = Array.from(tpl.matchAll(/\{\{for (\w+) as (\w+)\}\}([\s\S]+?)\{\{endfor\}\}/g));
   loopMatches.forEach((match) => {
     const items = match[1];
@@ -39,8 +39,8 @@ export function template<T>(tpl: string, data: { [key: string]: T }): string {
   });
 
   // Handle "if" matches
-  // https://regex101.com/r/nsIjjC/1
-  const ifMatches = Array.from(tpl.matchAll(/\{\{if (\w+)\}\}([\s\S]+?)\{\{endif\}\}/g));
+  // https://regex101.com/r/Q5x0u2/1
+  const ifMatches = Array.from(tpl.matchAll(/\{\{if (\w+.?\w+)\}\}([\s\S]+?)\{\{endif\}\}/g));
   ifMatches.forEach((match) => {
     const key = match[1];
     const subTpl = match[2];
@@ -54,7 +54,7 @@ export function template<T>(tpl: string, data: { [key: string]: T }): string {
   });
 
   // Handle "pattern" matches
-  // https://regex101.com/r/nsIjjC/1
+  // https://regex101.com/r/zY3oJS/2
   const patternMatches = Array.from(tpl.matchAll(/\{\{((\w+)(\.?\w+)*)\}\}/g));
   patternMatches.forEach((match) => {
     const key = match[1];

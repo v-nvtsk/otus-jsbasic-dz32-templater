@@ -99,6 +99,10 @@ describe("template", () => {
     it("correctly works with null values", () => {
       expect(template("{{if num}}YES{{endif}}", { num: null })).toBe("");
     });
+
+    it("correctly works with objects as conditional values", () => {
+      expect(template("{{if is.nested}}YES{{endif}}", { is: { nested: true } })).toBe("YES");
+    });
   });
 
   describe("complex test", () => {
