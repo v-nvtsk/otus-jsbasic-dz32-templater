@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { BaseComponent } from "./base-component";
 
 describe("Component", () => {
@@ -7,14 +8,19 @@ describe("Component", () => {
 
   it("Component is a class", () => {
     const el = document.createElement("div");
-    const component = new BaseComponent(el);
-    expect(component instanceof BaseComponent).toBe(true);
+    class Weather extends BaseComponent {}
+    const component = new Weather(el);
+    expect(component instanceof Weather).toBe(true);
   });
 
-  it("should render empty string", () => {
+  it("should render empty string if no render method implementation", () => {
     const el = document.createElement("div");
+    el.innerHTML = "some innerHTML";
+    class Weather extends BaseComponent {
+      state = { field: 1 };
+    }
     // eslint-disable-next-line no-new
-    new BaseComponent(el);
-    expect(el.innerHTML).toBe("");
+    new Weather(el);
+    expect(el.innerHTML).toEqual("some innerHTML");
   });
 });

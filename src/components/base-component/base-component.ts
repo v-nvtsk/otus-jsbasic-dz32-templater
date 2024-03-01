@@ -1,5 +1,7 @@
+import { template } from "../../utils/templater";
+
 export class BaseComponent<State = {}> {
-  protected state: Partial<State> = {} as State;
+  protected state: Partial<State> = {};
 
   protected events: {
     [key: string]: (ev: Event) => void;
@@ -9,27 +11,27 @@ export class BaseComponent<State = {}> {
     protected el: HTMLElement,
     initialState?: Partial<State>,
   ) {
-    this.setState(initialState);
     this.el = el;
-    this.onMount(el);
+    setTimeout(() => {
+      this.setState(initialState);
+      this.setEventHandlers();
+    }, 0);
   }
 
   setEventHandlers() {
     Object.entries(this.events).forEach(([key, callback]) => {
       const [action, selector] = key.split("@");
       this.el.addEventListener(action, (ev: Event) => {
-        if (ev.target !== null && ev.target instanceof HTMLElement) {
-          if (ev.target.matches(selector)) {
-            callback(ev);
-          }
-        }
+        if ((ev.target as HTMLElement).matches(selector)) callback(ev);
       });
     });
   }
 
   protected setState(patch: any): void {
-    this.state = { ...this.state, ...patch };
-    this.render();
+    if (patch !== undefined) {
+      this.state = { ...this.state, ...patch };
+    }
+    this.el.innerHTML = template(this.render(), this.state);
   }
 
   protected onMount(el: HTMLElement) {
@@ -38,8 +40,8 @@ export class BaseComponent<State = {}> {
     this.el.innerHTML = innerHTML;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   protected render(): string {
-    this.el.innerHTML = "";
-    return "";
+    return this.el.innerHTML;
   }
 }
