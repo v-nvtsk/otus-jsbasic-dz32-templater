@@ -1,5 +1,5 @@
 import getWeatherInCity from "../../api/get-weather";
-import createCitiesCache, { CitiesCache } from "../../store/cities-cache";
+import { CitiesCache } from "../../CitiesCache/cities-cache";
 import getCityByIP from "../../api/ip";
 import { BaseComponent } from "../base-component/base-component";
 
@@ -19,8 +19,7 @@ export class Weather extends BaseComponent<State> {
 
   constructor(el: HTMLElement, initialState?: Partial<State>) {
     super(el, initialState);
-    this.citiesCache = createCitiesCache();
-    this.citiesCache.init();
+    this.citiesCache = new CitiesCache();
     this.citiesCache.subscribe(this.citiesListener);
   }
 
@@ -40,7 +39,7 @@ export class Weather extends BaseComponent<State> {
   }
 
   citiesListener = () => {
-    this.setState({ cities: this.citiesCache.cities });
+    this.setState({ cities: this.citiesCache.getCities() });
   };
 
   onUnmount() {
