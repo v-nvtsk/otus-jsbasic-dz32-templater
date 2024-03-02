@@ -40,6 +40,7 @@ describe("weather", () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    weatherComponent.onUnmount();
     el.remove();
   });
 
@@ -111,6 +112,7 @@ describe("weather", () => {
 
   it("should add city to list", async () => {
     expect(el.querySelectorAll(".savedCity").length).toBe(1);
+    expect(el.querySelector(".savedCity")!.innerHTML).toEqual("TESTCITY");
     submitBtn = el.querySelector("button#submitBtn") as HTMLButtonElement;
     const testList = ["MOSCOW", "TULA", "TESTCITY"];
     const [city1, city2] = testList;

@@ -1,5 +1,5 @@
 import getWeatherInCity from "../../api/get-weather";
-import citiesCache from "../../store/cities-cache";
+import createCitiesCache, { CitiesCache } from "../../store/cities-cache";
 import getCityByIP from "../../api/ip";
 import { BaseComponent } from "../base-component/base-component";
 
@@ -15,12 +15,13 @@ export type State = {
 };
 
 export class Weather extends BaseComponent<State> {
+  private citiesCache: CitiesCache;
+
   constructor(el: HTMLElement, initialState?: Partial<State>) {
     super(el, initialState);
-    citiesCache.init();
-    citiesCache.subscribe(() => {
-      this.setState({ cities: citiesCache.cities });
-    });
+    this.citiesCache = createCitiesCache();
+    this.citiesCache.init();
+    this.citiesCache.subscribe(this.citiesListener);
   }
 
   public init() {
@@ -34,9 +35,16 @@ export class Weather extends BaseComponent<State> {
     initialCity
       .then((city) => this.updateWeather(city))
       .then(() => {
-        this.onMount(this.el);
-        this.setEventHandlers();
+        this.onMount();
       });
+  }
+
+  citiesListener = () => {
+    this.setState({ cities: this.citiesCache.cities });
+  };
+
+  onUnmount() {
+    this.citiesCache.unsubscribe(this.citiesListener);
   }
 
   private onSubmit = (ev: Event) => {
@@ -65,7 +73,7 @@ export class Weather extends BaseComponent<State> {
         currentIcon: weather.icon,
         coord: { lat: weather.coord[0], lon: weather.coord[1] },
       });
-      citiesCache.addCity(weather.city);
+      this.citiesCache.addCity(weather.city);
     }
   };
 
