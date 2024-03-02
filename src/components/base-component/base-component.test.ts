@@ -1,5 +1,11 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import { BaseComponent } from "./base-component";
+
+const sleep = async (x: number = 0) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, x);
+  });
 
 describe("Component", () => {
   it("Component is a function", () => {
@@ -7,20 +13,19 @@ describe("Component", () => {
   });
 
   it("Component is a class", () => {
-    const el = document.createElement("div");
-    class Weather extends BaseComponent {}
-    const component = new Weather(el);
-    expect(component instanceof Weather).toBe(true);
+    const wrapper = document.createElement("div");
+    class Component extends BaseComponent {}
+    const component = new Component(wrapper);
+    expect(component instanceof Component).toBe(true);
   });
 
-  it("should render empty string if no render method implementation", () => {
-    const el = document.createElement("div");
-    el.innerHTML = "some innerHTML";
-    class Weather extends BaseComponent {
-      state = { field: 1 };
-    }
+  it("should render empty string if no render method implementation", async () => {
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = "some innerHTML";
+    class Component extends BaseComponent {}
     // eslint-disable-next-line no-new
-    new Weather(el);
-    expect(el.innerHTML).toEqual("some innerHTML");
+    new Component(wrapper, { field2: 2 });
+    await sleep(0);
+    expect(wrapper.innerHTML).toEqual("");
   });
 });
