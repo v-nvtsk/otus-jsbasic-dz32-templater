@@ -33,16 +33,12 @@ describe("getWeatherInCity", () => {
   });
 
   beforeEach(async () => {
-    // global.fetch.mockReset();
     global.fetch = jest.fn().mockResolvedValue({
       json: jest.fn().mockResolvedValue(mockWeatherJSON),
     });
   });
 
   afterEach(() => {
-    // эта строка добавлена взамен
-    // global.fetch.mockReset();
-    // в beforeEach
     jest.resetAllMocks();
   });
 
