@@ -1,11 +1,15 @@
-import citiesCache from "./cities-cache";
-
-beforeEach(() => {
-  citiesCache.cities = [];
-  citiesCache.saveItems();
-});
+import createCitiesCache, { CitiesCache } from "./cities-cache";
 
 describe("citiesCache tests", () => {
+  let citiesCache: CitiesCache;
+
+  beforeEach(() => {
+    citiesCache = createCitiesCache();
+
+    citiesCache.cities = [];
+    citiesCache.saveItems();
+  });
+
   it("should save toStorage and read from Cities list", () => {
     const citiesList = ["Moscow", "London", "Paris", "New York"];
     citiesCache.cities = citiesList;
