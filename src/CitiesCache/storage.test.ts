@@ -46,4 +46,8 @@ describe("localStorage tests", () => {
     localStorage.setItem("cities", cities);
     expect(getLocalStorageItem("cities")).toEqual(null);
   });
+
+  test("return null if key not found", () => {
+    expect(getLocalStorageItem("test")).toEqual(null);
+  });
 });
