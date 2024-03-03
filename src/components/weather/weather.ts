@@ -31,11 +31,7 @@ export class Weather extends BaseComponent<State> {
           })
         : getCityByIP();
 
-    initialCity
-      .then((city) => this.updateWeather(city))
-      .then(() => {
-        this.onMount();
-      });
+    initialCity.then((city) => this.updateWeather(city));
   }
 
   citiesListener = () => {

@@ -66,17 +66,28 @@ describe("weather", () => {
     cod: 200,
   };
 
+  const mockWeaterData = () =>
+    jest.fn().mockImplementation((url: string) =>
+      Promise.resolve({
+        json: () => Promise.resolve({ ...testData, name: getCityFromURL(url) }),
+      }),
+    );
+
+  const mockWeather400 = () =>
+    jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        json: () => Promise.resolve({ cod: 400 }),
+      }),
+    );
+
   it("should be a function", () => {
     expect(typeof Weather).toBe("function");
   });
 
   it("should create initial markup", async () => {
-    global.fetch = jest.fn().mockImplementation((url: string) =>
-      Promise.resolve({
-        json: () => Promise.resolve({ ...testData, name: getCityFromURL(url) }),
-      }),
-    );
+    global.fetch = mockWeaterData();
     await initWeatherComponent();
+
     expect(el.innerHTML).not.toBe("");
     expect(form).not.toBeNull();
     expect(cityInput).not.toBeNull();
@@ -87,29 +98,23 @@ describe("weather", () => {
   });
 
   it("should not submit if no city in input", async () => {
-    global.fetch = jest.fn().mockImplementation((url: string) =>
-      Promise.resolve({
-        json: () => Promise.resolve({ ...testData, name: getCityFromURL(url) }),
-      }),
-    );
+    global.fetch = mockWeaterData();
     await initWeatherComponent();
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
     const len = el.querySelectorAll(".savedCity").length;
     const inner = el.innerHTML;
     cityInput.value = "";
-    global.fetch = jest.fn();
+
     form.submit();
-    expect(global.fetch).not.toHaveBeenCalled();
+    expect(global.fetch).toHaveBeenCalledTimes(1);
     const savedCities = el.querySelectorAll(".savedCity");
     expect(savedCities.length).toBe(len);
     expect(el.innerHTML).toEqual(inner);
   });
 
   it("should not render if city not exist", async () => {
-    global.fetch = jest.fn().mockImplementation(() =>
-      Promise.resolve({
-        json: () => Promise.resolve({ cod: 400 }),
-      }),
-    );
+    global.fetch = mockWeather400();
     await initWeatherComponent();
 
     const len = el.querySelectorAll(".savedCity").length;
@@ -122,12 +127,9 @@ describe("weather", () => {
   });
 
   it("should add city to list", async () => {
-    global.fetch = jest.fn().mockImplementation((url: string) =>
-      Promise.resolve({
-        json: () => Promise.resolve({ ...testData, name: getCityFromURL(url) }),
-      }),
-    );
+    global.fetch = mockWeaterData();
     await initWeatherComponent();
+
     let savedCities = el.querySelectorAll(".savedCity");
     expect(savedCities.length).toBe(1);
     expect(savedCities[0].innerHTML).toEqual("TESTCITY");
@@ -164,11 +166,7 @@ describe("weather", () => {
   });
 
   it("should get city by ip if no city in input", async () => {
-    global.fetch = jest.fn().mockImplementation((url: string) =>
-      Promise.resolve({
-        json: () => Promise.resolve({ ...testData, name: getCityFromURL(url) }),
-      }),
-    );
+    global.fetch = mockWeaterData();
 
     const wrapper = document.createElement("div");
     const weather = new Weather(wrapper, {});
