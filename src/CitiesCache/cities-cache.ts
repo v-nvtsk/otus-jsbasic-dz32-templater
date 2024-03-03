@@ -1,6 +1,6 @@
 import { getLocalStorageItem, setLocalStorageItem } from "./storage";
 
-const CITY_LIST = "cities";
+export const CITY_LIST = "cities";
 
 export class CitiesCache {
   private cities: string[] = [];
@@ -8,12 +8,12 @@ export class CitiesCache {
   private listeners: Function[] = [];
 
   loadItems() {
-    this.cities = (getLocalStorageItem(CITY_LIST) || []) as string[];
-    return this.cities;
+    this.cities = (getLocalStorageItem(CITY_LIST) ?? []) as string[];
+    return [...this.cities];
   }
 
   setCities(cities: string[]) {
-    this.cities = [...cities];
+    this.cities = [...cities].slice(0, 10);
   }
 
   getCities() {
@@ -33,12 +33,16 @@ export class CitiesCache {
         tempArr.push(this.cities[i]);
       }
     }
-    if (tempArr.length === 11) tempArr.pop();
-    this.cities = tempArr;
+    // if (tempArr.length === 11) tempArr.pop();
+    this.setCities(tempArr);
 
     this.saveItems();
-    this.listeners.forEach((listener) => listener(this.cities));
+    this.trigger();
     return newItem;
+  }
+
+  trigger() {
+    this.listeners.forEach((listener) => listener(this.cities));
   }
 
   subscribe(listener: Function) {

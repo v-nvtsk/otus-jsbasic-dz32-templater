@@ -9,7 +9,7 @@ export function getLocalStorageItem(key: string) {
   return result;
 }
 
-export function setLocalStorageItem(key: string, value: string | string[]) {
+export function setLocalStorageItem(key: string, value: string | string[]): void {
   const savedValue = JSON.stringify(value);
-  return localStorage.setItem(key, savedValue);
+  localStorage.setItem(key, savedValue);
 }

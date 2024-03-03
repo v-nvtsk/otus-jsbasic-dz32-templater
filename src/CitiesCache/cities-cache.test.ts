@@ -1,15 +1,23 @@
 import { CitiesCache } from "./cities-cache";
+import * as storage from "./storage";
 
 describe("citiesCache tests", () => {
   let citiesCache: CitiesCache;
 
   beforeEach(() => {
+    localStorage.clear();
+    jest.restoreAllMocks();
     citiesCache = new CitiesCache();
-    citiesCache.saveItems();
   });
 
-  it("should load empty array from storage if it's not present", () => {
+  it("should load array from storage", () => {
+    let mockedGetItem = jest.spyOn(storage, "getLocalStorageItem").mockReturnValue(null);
     expect(citiesCache.loadItems()).toEqual([]);
+    expect(mockedGetItem).toHaveBeenCalled();
+    const testList = ["1", "2", "3", "4"];
+    mockedGetItem = jest.spyOn(storage, "getLocalStorageItem").mockReturnValue(testList);
+    expect(citiesCache.loadItems()).toEqual(testList);
+    jest.restoreAllMocks();
   });
 
   it("should save toStorage and read from Cities list", () => {
@@ -46,6 +54,11 @@ describe("citiesCache tests", () => {
     citiesCache.setCities(["MOSCOW", "MADRID"]);
     citiesCache.saveItems();
     expect(citiesCache.loadItems()).toEqual(["MOSCOW", "MADRID"]);
+  });
+
+  it("should not set cities list with more than 10 items", () => {
+    citiesCache.setCities(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]);
+    expect(citiesCache.getCities()).toEqual(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]);
   });
 
   test("it should not add same item", () => {
@@ -88,5 +101,16 @@ describe("citiesCache tests", () => {
       "ROME",
       "MADRID",
     ]);
+  });
+
+  it("should call listeners on cityAdd and unsubscribe them", () => {
+    const listener = jest.fn();
+    citiesCache.subscribe(listener);
+    citiesCache.addCity("Moscow");
+    expect(listener).toHaveBeenCalledWith(["MOSCOW"]);
+    expect(listener).toHaveBeenCalledTimes(1);
+    citiesCache.unsubscribe(listener);
+    citiesCache.addCity("Tula");
+    expect(listener).toHaveBeenCalledTimes(1);
   });
 });
