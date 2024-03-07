@@ -27,12 +27,6 @@ describe("getCityByIP", () => {
         json: () => Promise.resolve(mockGeoIpJSON),
       }),
     );
-
-    result = await getCityByIP();
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
   });
 
   it("getCityByIP is a function", () => {
@@ -40,6 +34,7 @@ describe("getCityByIP", () => {
   });
 
   it("getCityByIP returns promise", async () => {
+    result = await getCityByIP();
     expect(fetch).toHaveBeenCalledWith(`https://get.geojs.io/v1/ip/geo.json`);
     expect(result).toEqual("Moscow");
   });
