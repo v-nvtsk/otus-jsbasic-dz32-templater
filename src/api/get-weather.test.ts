@@ -50,7 +50,7 @@ describe("getWeatherInCity", () => {
   });
   it("getWeatherInCity returns not found", async () => {
     global.fetch = jest.fn().mockResolvedValue({
-      json: jest.fn().mockResolvedValue({ cod: 400 }),
+      ok: false,
     });
     const result = await getWeatherInCity("Moscow");
     expect(result).toBeNull();
