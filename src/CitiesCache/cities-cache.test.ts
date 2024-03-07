@@ -6,8 +6,11 @@ describe("citiesCache tests", () => {
 
   beforeEach(() => {
     localStorage.clear();
-    jest.restoreAllMocks();
     citiesCache = new CitiesCache();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it("should load array from storage", () => {
@@ -17,7 +20,7 @@ describe("citiesCache tests", () => {
     const testList = ["1", "2", "3", "4"];
     mockedGetItem = jest.spyOn(storage, "getLocalStorageItem").mockReturnValue(testList);
     expect(citiesCache.loadItems()).toEqual(testList);
-    jest.restoreAllMocks();
+    // jest.restoreAllMocks();
   });
 
   it("should save toStorage and read from Cities list", () => {
