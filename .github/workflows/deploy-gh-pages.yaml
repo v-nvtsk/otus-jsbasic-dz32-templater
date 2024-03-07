@@ -18,14 +18,11 @@ jobs:
         run: |
           npm ci
 
-      # - name: Test
-      #   run: npm test
-
-      # - name: CI Badges
-      #   uses: GaelGirodon/ci-badges-action@v1.1.0
-      #   with:
-      #     gist-id: f9b687636482339cabd6a8c4b369f3eb
-      #     token: ${{ secrets.GIST_TOKEN }}
+      - name: CI Badges
+        uses: GaelGirodon/ci-badges-action@v1.1.0
+        with:
+          gist-id: f9b687636482339cabd6a8c4b369f3eb
+          token: ${{ secrets.GIST_TOKEN }}
 
       - name: Build prod
         run: |
