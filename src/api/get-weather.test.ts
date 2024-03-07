@@ -34,12 +34,9 @@ describe("getWeatherInCity", () => {
 
   beforeEach(async () => {
     global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
       json: jest.fn().mockResolvedValue(mockWeatherJSON),
     });
-  });
-
-  afterEach(() => {
-    jest.resetAllMocks();
   });
 
   it("getWeatherInCity returns city, temp and icon", async () => {

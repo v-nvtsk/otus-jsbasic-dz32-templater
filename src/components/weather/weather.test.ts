@@ -69,6 +69,7 @@ describe("weather", () => {
   const mockWeaterData = () =>
     jest.fn().mockImplementation((url: string) =>
       Promise.resolve({
+        ok: true,
         json: () => Promise.resolve({ ...testData, name: getCityFromURL(url) }),
       }),
     );

@@ -8,18 +8,14 @@ export default async function getWeatherInCity(
   const response = await fetch(
     `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=${units}&lang=${lang}`,
   );
-  const data = await response.json();
-  let city;
-  let temp;
-  let icon;
-  let coord: [number, number];
-  if (data.cod === 200) {
-    city = data.name;
-    temp = String(Math.round(data.main.temp));
-    icon = data.weather[0].icon;
-    coord = [data.coord.lon, data.coord.lat];
-  } else {
-    return null;
+  if (response.ok) {
+    const data = await response.json();
+
+    const city = data.name;
+    const temp = String(Math.round(data.main.temp));
+    const { icon } = data.weather[0];
+    const coord: [number, number] = [data.coord.lon, data.coord.lat];
+    return { city, temp, icon, coord };
   }
-  return { city, temp, icon, coord };
+  return null;
 }
